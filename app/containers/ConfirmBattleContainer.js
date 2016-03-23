@@ -1,5 +1,6 @@
 var React = require('react');
 var ConfirmBattle = require('../components/ConfirmBattle');
+var githubHelpers = require('../utils/githubHelpers');
 
 var ConfirmBattleContainer = React.createClass({
   contextTypes: {
@@ -11,19 +12,16 @@ var ConfirmBattleContainer = React.createClass({
       playersInfo: []
     }
   },
-  componentWillMount: function () {
-    console.log('Component Will Mount');
-  },
   componentDidMount: function () {
     var query = this.props.location.query;
-    // Fetch info from github and update state
-    console.log('Component Did Mount');
-  },
-  componentWillReceiveProps: function () {
-    console.log('Component Will Receive Props');
-  },
-  componentWillUnmount: function () {
-    console.log('Component Will Unmount');
+    githubHelpers.getPlayersInfo([query.playerOne, query.playerTwo])
+    .then(function (players) {
+      this.setState({
+        isLoading: false,
+        playersInfo: [players[0], players[1]]
+      });
+    }.bind(this));
+    // ^ fix this context (same as caching that = this & using that)
   },
   render: function () {
     return (
